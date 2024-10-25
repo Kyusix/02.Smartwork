@@ -1,0 +1,65 @@
+// 문서 진입할 때 적용할 내용
+$(document).ready(function() {
+    $('#smwWorkReg_subject').prop('disabled', true);
+    $('#EndUser').prop('disabled', true);
+    $('#SiteCode').prop('disabled', true);
+    $('#SUM').prop('disabled', true);
+    $('#ServerCount').prop('disabled', true);
+    $('#ProductCode').prop('disabled', true);    
+    
+    $('#smwWorkReg_subject').attr('placeholder', '아래 입력내용에 따라 자동으로 입력됩니다.');
+    $('#ContNM').attr('placeholder', '수주 사업명을 기입합니다.');
+    $('#EndUser').attr('placeholder', '좌측 폴더아이콘 클릭 →');
+    $('#orderNM').attr('placeholder', '발주업체입력');
+    $('#SiteCode').attr('placeholder', '자동입력');
+    $('#SUM').attr('placeholder', '자동입력');
+    $('#ProductCode').attr('placeholder', '←선택');
+
+    // 초기에 모든 Product 엘리먼트에 대해 InputProductCode 함수 호출
+    $('[id^="Product_"]').each(function() {
+        InputProductCode(this);
+    });
+});
+
+// 제목자동입력 이벤트 설정
+$(document).on('change', '#ContNM, #HopeDate, #H8F1698715938248, #IF81698715936301, #tFQ1698715933898', function() {
+    getInputValue();
+});
+
+// 제목자동입력함수
+function getInputValue() {
+    $('#smwWorkReg_subject').attr('disabled', true);
+    var docSubject = $('#smwWorkReg_subject').val();
+
+    const dateString = $('#HopeDate').val();
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+
+    var a = $('#ContNM').val();
+    var b = $('#EndUser').val();
+
+    $('#smwWorkReg_subject').val(year + " " + b + " " + a + " 제품설치/라이선스 신청 건");
+    $('#smwWorkReg_subject').focus();
+}
+
+// Product 선택값에 따라 Product code 값 변경되도록 이벤트 핸들러 추가
+$(document).on('change', '[id^="Product_"]', function() {
+    InputProductCode(this); // this를 통해 현재 변경된 Product 엘리먼트에 대한 정보 전달
+});
+
+// 추가된 행에 대해 호출되도록 설정
+$(document).on('click', '.ico_add._rowAdd', function() {
+    // 행 추가 시 추가된 Product 엘리먼트에 대해 InputProductCode 함수 호출
+    var currentIndex = $('.ico_add._rowAdd').index(this);
+    InputProductCode($('#Product_' + currentIndex));
+});
+
+// ProductCode 입력 함수
+function InputProductCode(changedProductElement) {
+    var productId = $(changedProductElement).attr('id'); // 변경된 Product 엘리먼트의 ID 가져오기
+    var productIndex = productId.split('_')[1]; // 숫자 부분 추출
+    var productCode = $('#Product_' + productIndex).val(); // 해당 Product에 대한 코드 가져오기
+    $('#ProductCode_' + productIndex).val(productCode); // ProductCode 엘리먼트에 값 설정
+
+}
+
