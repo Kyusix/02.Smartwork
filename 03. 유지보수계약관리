@@ -1,0 +1,158 @@
+// 문서 진입할// 문서 진입할때 적용할 내용
+$(document).ready(function() {
+    $('#smwWorkReg_subject').attr('disabled',true); /*제목입력잠금*/
+    $('#smwWorkReg_bgnDe').attr('disabled',true); /*시작일입력잠금*/
+    $('#smwWorkReg_endDe').attr('disabled',true); /*완료일입력잠금*/
+    minDe(); // 페이지가 로드된 후 minDe() 함수 호출
+});
+/* placeholder */
+// 제목입력란
+$('#smwWorkReg_subject').attr('placeholder', '아래 입력내용에 따라 자동으로 입력됩니다.');
+// 고객사(엔드유저)
+$('#1gf1693529351914_0').attr("placeholder", '스마트시티부/사업총괄');
+$('#5Iz1693529426010_0').attr('placeholder', '정우성/주무관');
+$('#YD21693529451414_0').attr('placeholder', '010-1234-5678');
+$('#0S61693529468148_0').attr('placeholder', 'example@metabuild.co.kr');
+// 고객사(엔드유저)
+$('#5331693531267148_0').attr('placeholder', '담당영업/세금계산서발행');
+$('#lKH1693531268508_0').attr('placeholder', '원빈/과장');
+$('#YlM1693531269662_0').attr('placeholder', '010-1234-5678');
+$('#aqa1693531270625_0').attr('placeholder', 'example@metabuild.co.kr');
+
+/*disabled 처리*/
+//사업기간//
+$('#PJTperiod').attr('disabled',true);
+//유지보수대상금액(VAT별도)//
+$('#HBe1693461623357').attr('disabled',true);
+//유지보수수주액(VAT포함)//
+$('#v4G1693461818484').attr('disabled',true);
+//연간유지보수환산액(VAT별도)//
+$('#bvk1694479215790').attr('disabled',true);
+//유지보수요율(%)//
+$('#zgT1693462194025').attr('disabled',true);
+//제품납품가(VAT별도)//
+$('#mnY1693545324770_0').attr('disabled',true);
+//실계약월//
+$('#oVz1694998522698').attr('disabled',true);
+
+// 각 아이디 값마다 change 이벤트 적용
+$('#ContNM').change(function() {
+    getInputValue();
+    });
+    
+$('#EndUser').change(function() {
+    getInputValue();   
+    });
+    
+$('#OrderNM').change(function() {
+    getInputValue();   
+    });
+
+$('#zIx1694998501993').change(function(){
+        timeCnt();
+        minDe();
+});
+
+$('#p6X1693531671923').change(function(){
+        dateCnt();
+        AutobgnDe();
+});
+
+$('#oA31693531669710').change(function(){
+        dateCnt();
+        AutoendDe();
+});
+
+function getInputValue() {
+    
+       $('#smwWorkReg_subject').attr('disabled',true); /*제목입력잠금*/
+
+		var docSubject = $('#smwWorkReg_subject').val();
+		var a = $('#ContNM').val();
+		var b = $('#EndUser').val();
+		var c = $('#OrderNM').val();
+
+        $('#smwWorkReg_subject').val(b + " " + a + " (발주처 : " + c + ")");
+        $('#smwWorkReg_subject').focus();
+
+}
+
+//시작일 자동입력
+function AutobgnDe() {
+    
+       $('#smwWorkReg_bgnDe').attr('disabled',true); /*완료일입력잠금*/
+    
+        var d = $('#p6X1693531671923').val();
+        
+        $('#smwWorkReg_bgnDe').val(d);
+        $('#smwWorkReg_bgnDe').focus();
+        
+}
+    
+
+//완료일 자동입력
+function AutoendDe() {
+    
+       $('#smwWorkReg_endDe').attr('disabled',true); /*완료일입력잠금*/
+    
+        var e = $('#oA31693531669710').val();
+        
+        $('#smwWorkReg_endDe').val(e);
+        $('#smwWorkReg_endDe').focus();
+        
+}
+    
+
+    // 날짜계산
+function dateCnt() {
+    const date1 = $('#p6X1693531671923').val();
+    const date2 = $('#oA31693531669710').val();
+
+    const stDate = new Date(date1);
+    const endDate = new Date(date2);
+
+    // 날짜 차이를 일 단위로 계산
+    const diffInDays = Math.ceil((endDate - stDate) / (1000 * 60 * 60 * 24));
+
+    // 일 단위를 월 단위로 변환
+    const diffInMonths = diffInDays / 30.44; // 평균 월 길이
+
+    // 결과를 표시, 소수점 이하가 0이면 .0을 제거
+    $('#PJTperiod').val(diffInMonths.toFixed(1).replace('.0', ''));
+}
+
+// 계약순기 자동입력
+function timeCnt() {
+    // 날짜 값을 가져오기
+    const dateString = $('#zIx1694998501993').val();
+
+    // 날짜 문자열을 Date 객체로 파싱
+    const date = new Date(dateString);
+
+    // 년도 추출
+    const year = date.getFullYear();
+
+    // 월 추출
+    const month = date.getMonth() + 1; // 월은 0부터 시작하므로 1을 더해줍니다.
+
+    // 월을 두 자리로 포맷팅
+    const formattedMonth = pad(month, 2);
+
+    // 실계약에 출력
+    $('#oVz1694998522698').val(year + formattedMonth); // 년도와 월을 숫자로만 출력합니다.
+}
+
+// 실계약(갱신)일자 오늘 이후 날짜 비활성
+function minDe() {
+    // Datepicker를 초기화하고 오늘 이후의 날짜를 비활성화
+   $('#zIx1694998501993').datepicker('option', 'maxDate','0') // 오늘 이후의 날짜를 선택할 수 없도록 설정
+
+}
+
+// 숫자를 지정된 자리수만큼 0으로 채우는 함수
+function pad(num, size) {
+    let s = num + "";
+    while (s.length < size) s = "0" + s;
+    return s;
+}
+
