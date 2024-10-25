@@ -1,0 +1,38 @@
+// 문서 진입할// 문서 진입할때 적용할 내용
+
+$( document ).ready(function() {
+    $('#smwWorkReg_subject').attr('disabled',true); /*제목입력잠금*/
+    $('#smwWorkReg_endDe').attr('disabled',true); /*완료일입력잠금*/    
+
+    $('#wlQ1700112301994').attr('placeholder', '등록승인 시 부여');
+    $('#93P1623745409856_0').attr('placeholder', '2019 차세대 미래행정정보센터 ESB구축');
+    $('#ZEm1623745439084_0').attr('placeholder', '홍길동/차장/혁신협력팀');
+    
+});
+
+
+
+/*이벤트핸들러*/
+
+$('#Cta1589438647405').change(function() {
+    getInputValue();   
+    });
+    
+$('#BER1589507409211').change(function() {
+    getInputValue();   
+    });
+
+
+
+function getInputValue() {
+    
+       $('#smwWorkReg_subject').attr('disabled',true); /*제목입력잠금*/
+
+		var docSubject = $('#smwWorkReg_subject').val();
+		var a = $('#Cta1589438647405').val();
+		var b = $('#BER1589507409211').val();
+
+        $('#smwWorkReg_subject').val(a);
+        $('#smwWorkReg_subject').focus();
+
+}
