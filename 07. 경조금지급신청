@@ -1,0 +1,34 @@
+// 문서 진입할때 적용할 내용
+$(document).ready(function() {
+    $('#smwWorkReg_subject').attr('disabled',true); /*제목입력잠금*/
+});
+$("#smwWorkReg_subject").attr("placeholder", "아래 내용을 기입하면 자동으로 입력됩니다.");
+
+
+// 체크 박스 클릭시 이벤트 적용
+$('.chk_div').click(function() {
+    getInputValue();
+});
+
+function getInputValue() {
+       $('#smwWorkReg_subject').attr('disabled',true); /*제목입력잠금*/
+
+		// var b =	$("#XHH1663893183264 option:selected").text(); // 셀렉트박스 예시
+		
+        const arr = []; // 선택 항목 리스트
+ 
+        var checked = $("input[name*='SC26479071265939363278']:checked");
+        
+        $(checked).each(function() {
+            if($(this).val() == 'CI26479071266040486198'){
+                arr.push('축의');
+            }else if($(this).val() == 'CI26479071266088533427'){
+                arr.push('조의');
+            }else if($(this).val() == 'CI26479071266107157459'){
+                arr.push('위로');
+            }
+        });
+
+        $('#smwWorkReg_subject').val("[" + arr + "] 사유로 인한 경조금 신청합니다.");
+        $('#smwWorkReg_subject').focus();
+}
