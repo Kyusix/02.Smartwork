@@ -1,0 +1,176 @@
+$( document ).ready(function() {
+    /* placeholder */
+    // 영업정보 - 예상발주시기
+    $('#56k1622790568996').attr('placeholder', '2024년 상반기');
+    // 관련업체정보
+    $('#Sbj1623652862261_0').attr('placeholder', '홍길동/부장');
+    $('#adr1623652921742_0').attr('placeholder', '010-1234-5678');
+    $('#s0C1623652931431_0').attr('placeholder', 'example@metabuild.co.kr');
+    // 고객정보
+    $('#AYt1623820990328').attr('placeholder', '02-XXXX-XXXX / 010-XXXX-XXXX');
+    $('#o091623821058155').attr('placeholder', 'example@metabuild.co.kr');
+    // 기타관계자
+    $('#7wZ1623720601245_0').attr('placeholder', '010-1234-5678');
+    $('#S5A1623720691585_0').attr('placeholder', 'example@metabuild.co.kr');
+    
+    
+    
+    
+    /*disabled 처리*/
+    $('#dLi1625471635616').attr('disabled',true);
+    $('#hUb1625471886703').attr('disabled',true);
+    $('#CJj1625476182838').attr('disabled',true);
+    $('#iK91625476186915').attr('disabled',true);
+    $('#5jd1625642634526').attr('disabled',true);
+    $('#GIB1623737865110').attr('disabled',true);
+    $('#DsR1623740023980').attr('disabled',true);
+    $('#c2v1623740131572').attr('disabled',true);
+    $('#vWB1625718253359').attr('disabled',true);
+    $('#YdC1625550325511').attr('disabled',true);
+    $('#IV81625718016006').attr('disabled',true);
+    $('#mxI1625718021862').attr('disabled',true);
+    $('#DS61625718539963').attr('disabled',true);
+    $('#VkJ1625719066874').attr('disabled',true);
+    $('#wff1625719137803').attr('disabled',true);
+    $('#B9J1625719216981').attr('disabled',true);
+    $('#9cy1625719219270').attr('disabled',true);
+    $('#HsQ1625719322343').attr('disabled',true);
+    $('#7nl1625719510809').attr('disabled',true);
+    $('#1AO1625720093858').attr('disabled',true);
+    $('#a1l1625720124144').attr('disabled',true);
+    $('#c171625720172359').attr('disabled',true);
+    $('#yKl1625720171001').attr('disabled',true);
+    $('#Ez31625720169288').attr('disabled',true);
+    $('#uC01625720167240').attr('disabled',true);
+    $('#Lnv1625550328735').attr('disabled',true);
+    $('#pf81625718113631').attr('disabled',true);
+    $('#Ww41625718031703').attr('disabled',true);
+    $('#PnB1625718569189').attr('disabled',true);
+    $('#7lW1625718000019').attr('disabled',true);
+    $('#Njc1625718458158').attr('disabled',true);
+
+    
+	$('#ssg1622790340705' + $.escapeSelector('.0')).change(function(){
+        dateCnt();
+    });
+
+  $('#ssg1622790340705' + $.escapeSelector('.1')).change(function(){
+        dateCnt();
+    });
+
+
+    $('#yGp1625708709814').click(function(){
+    // 원가상세명세표 직접입력
+    if($('#yGp1625708709814').is(':checked')){
+		$('#tyG1625538306954').prop('readonly', false);
+		$('#tyG1625538306954').prop('onfocus', false);
+
+		$('#tyG1625538306954').addClass('_number');
+		$('#sVk1625538771032').prop('readonly', false);
+		$('#sVk1625538771032').prop('onfocus', false);
+	
+		$('#sVk1625538771032').addClass('_number');
+
+	} 
+    	});
+	
+	
+		// 프로젝트 정보 - 유지보수 요율 Event
+	if($('#alc1623989392551').is(':checked')){
+	    //체크
+	    $('#hMr1623989460855').val(0);
+		$('#hMr1623989460855').attr('disabled', true);
+		  //%입력란 비활성화
+		$('#YMY1623990300229').attr('disabled', true);
+		  //VAT포함여부 비활성화
+		
+	} else {
+	    $('#hMr1623989460855').attr('disabled', false);
+	      //%입력란 활성화
+	    $('#YMY1623990300229').attr('disabled', false);
+	      //VAT포함여부 활성화
+	}
+	
+	$('#alc1623989392551').click(function(){
+	    if($(this).is(':checked')) {
+			$('#hMr1623989460855').val(0);
+			$('#hMr1623989460855').attr('disabled', true);
+			$('#YMY1623990300229').attr('disabled', true);
+			
+		} else {
+		    $('#hMr1623989460855').val(13);
+			$('#hMr1623989460855').attr('disabled', false);
+			$('#YMY1623990300229').attr('disabled', false);
+		}
+	});
+	
+	
+	
+/*			// BMT/POC여부 비고란 Event
+	if($('#WAn1622790260059').closest('.rdo_div').find('input[type="radio"]:checked').data('score') == '0') {
+	    // Y
+	    $('#5Pv1623990442499').attr('disabled', true);
+	} else {
+	    // N
+        $('#5Pv1623990442499').attr('disabled', false);
+	}*/
+	
+	$('#WAn1622790260059').closest('.rdo_div').find('input[type="radio"]').bind('click.subEvent', function(){
+	    if($(this).data('itemId') == 'CI20635563521156082807') {
+            // Y
+	        $('#5Pv1623990442499').attr('disabled', false);
+        } else {
+            // N
+            $('#5Pv1623990442499').attr('disabled', true);
+               //BMT/POC 여부 비고란 비활성화
+        }
+	});
+	
+	
+			// 용역 추가금액 견적포함 유무 Event
+		$('#66i1623990333826').closest('.rdo_div').find('input[type="radio"]').bind('click.subEvent', function(){
+	    if($(this).data('itemId') == 'CI20634040441479252418') {
+            // 협의없음
+	        $('#GKA1624323579719').attr('disabled', true); 
+	          //추가용역비 입력란 비활성화
+	        $('#uTW1624323645120').attr('disabled', true);
+	          //추가용역비 VAT포함 선택란 비활성화
+	        $('#kRj1623991385586').attr('disabled', true);
+	          //용역추가금액 사전협의유무 비고란 비활성화
+	        
+        } else {
+            // 제품가와 별개로 추가
+            $('#GKA1624323579719').attr('disabled', false);
+	          //추가용역비 입력란 활성화
+	        $('#uTW1624323645120').attr('disabled', false);
+	          //추가용역비 VAT포함 선택란 활성화
+	        $('#kRj1623991385586').attr('disabled', false);
+	          //용역추가금액 사전협의유무 비고란 활성화
+        }
+	});
+	
+
+});
+
+
+function dateCnt(){
+    const date1 = $('#ssg1622790340705' + $.escapeSelector('.0')).val();
+    const date2 =$('#ssg1622790340705' + $.escapeSelector('.1')).val();
+
+    const stDate = new Date(date1);
+    const endDate = new Date(date2);
+
+    const btMs = Math.abs(endDate-stDate);
+
+    const btDay = btMs / (1000 * 3600 * 24) +1 ; // 시작일 포함
+
+    
+    
+    if(btDay > 0){
+        return $("#mC41625811416488").val(btDay);
+    }else{
+        return $("#mC41625811416488").val(0);
+    }
+}
+
+
