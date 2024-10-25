@@ -1,0 +1,84 @@
+$(document).ready(function() {
+    // 두 날짜 간의 일수를 계산하는 함수(M/M 계산 함수)
+    function calculateDays(startDate, endDate) {
+        // 두 날짜가 모두 입력되었을 때만 함수를 적용
+        if (startDate && endDate) {
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+
+            // 년, 월, 일 차이 계산
+            const yearDiff = end.getFullYear() - start.getFullYear();
+            const monthDiff = end.getMonth() - start.getMonth();
+            const dayDiff = end.getDate() - start.getDate();
+
+            // 일수 계산
+            const daysDifference = (yearDiff * 12 + monthDiff) + (dayDiff / 30);
+
+            return daysDifference.toFixed(1); // 소수점 한 자리까지 표시
+        } else {
+            return ""; // 하나라도 입력되지 않으면 빈 문자열 반환
+        }
+    }
+
+    // 투입일과 철수일 선택 이벤트
+    $(document).on("change", "input[id^='JE'], input[id^='zB']", function() {
+        // 현재 행의 인덱스 구하기
+        const rowIndex = $(this).closest("tr").index();
+
+        // 투입일과 철수일의 ID 생성
+        const inputStartDateId = "JEq1710720787390_" + rowIndex;
+        const inputEndDateId = "zBJ1710720791833_" + rowIndex;
+        const resultInputId = "kz91710720819236_" + rowIndex;
+
+        // 투입일과 철수일 값 가져오기
+        const startDate = $("#" + inputStartDateId).val();
+        const endDate = $("#" + inputEndDateId).val();
+
+        // 일수 계산
+        const daysDifference = calculateDays(startDate, endDate);
+
+        // 결과를 결과를 표시할 input 요소에 적용
+        $("#" + resultInputId).val(daysDifference);
+
+        // M/M 값의 합계 계산 및 입력
+        updateSum();
+    });
+
+    // 행 추가 버튼 클릭 이벤트
+    $(document).on("click", "._rowAdd", function() {
+        // 테이블의 tbody에 새로운 행 추가
+        const newRow = $("table.tableCtrl tbody").append("<tr>...</tr>"); // 여기에 실제 행 추가 코드 추가
+
+        // 새로 추가된 행에 투입일과 철수일 선택 이벤트 적용
+        newRow.find("input[id^='JE']").datepicker();
+        newRow.find("input[id^='zB']").datepicker();
+
+        newRow.find("input[id^='JE'], input[id^='zB']").change(function() {
+            const startDate = $(this).closest("tr").find("input[id^='JE']").val();
+            const endDate = $(this).closest("tr").find("input[id^='zB']").val();
+
+            const daysDifference = calculateDays(startDate, endDate);
+
+            $(this).closest("tr").find("input[id^='kz9']").val(daysDifference);
+
+            // M/M 값의 합계 계산 및 입력
+            updateSum();
+        });
+    });
+
+    // M/M 값의 합계 계산 및 입력
+    function updateSum() {
+        let sum = 0;
+        $("input[id^='kz9']").each(function() {
+            const value = parseFloat($(this).val());
+            if (!isNaN(value)) {
+                sum += value;
+            }
+        });
+
+        // 합계를 입력할 input 요소에 적용
+        $("input#hmN1710719094576").val(sum.toFixed(1));
+    }
+    // hmN1710719094576 항목 readonly로 변경
+    $("input#hmN1710719094576").prop("readonly", true);
+});
