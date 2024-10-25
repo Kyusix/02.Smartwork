@@ -1,0 +1,192 @@
+// 문서 진입할 때 적용할 내용
+$(document).ready(function() {
+    $('#smwWorkReg_subject').prop('disabled', true); /* 제목 입력 잠금 */
+    $('#EndUser').prop('disabled', true); /* 입력잠금 */    
+    $('#OrderNM').prop('disabled', true); /* 입력잠금 */    
+    $('#SiteCode').prop('disabled', true); /* 입력잠금 */    
+    $('#ProductCode').prop('disabled', true); /* 입력잠금 */    
+    $('#AcceptDate').prop('disabled', true); /* 입력잠금 */  
+    $('#LicenseNum').prop('disabled', true); /* 입력잠금 */
+    $('[id^="Year_"]').prop('disabled', true); /* 입력잠금 */
+    $('[id^="SerialNum_"]').prop('disabled', true); /* 입력잠금 */ 
+    $('#kFu1700722638437').prop('disabled', true); /* 입력잠금 */   
+    $('#H4j1700722647195').prop('disabled', true); /* 입력잠금 */   
+    $('#ApprovalDate').prop('disabled', true); /* 입력잠금 */    
+    
+    
+    $('#smwWorkReg_subject').attr('placeholder', '아래 입력내용에 따라 자동으로 입력됩니다.');
+    $('#ContNM').attr('placeholder', '좌측 폴더 아이콘 클릭하여 해당 건 선택하세요.');   
+    $('#EndUser').attr('placeholder', '자동입력항목');
+    $('#OrderNM').attr('placeholder', '자동입력항목');
+    $('#SiteCode').attr('placeholder', '자동입력');
+    $('#ProductCode').attr('placeholder', '자동입력항목');
+    $('#AcceptDate').attr('placeholder', '자동입력항목');
+    $('#LicenseNum').attr('placeholder', '자동입력항목');
+    $('[id^="Year_"]').attr('placeholder', '자동입력');
+    $('[id^="SerialNum_"]').attr('placeholder', '자동입력항목');    
+
+    // Product, Class 이벤트 설정
+    $(document).on('change', '#Product, #Class', function() {
+        getInputValue();
+        InputProductCode();
+        updateSerialNumbers();
+        updateLicenseNum(); // SerialNum이 변경될 때마다 LicenseNum 업데이트
+    });
+
+    // "행 추가" 버튼 클릭 이벤트 설정
+    $(document).on('click', '.ico_add._rowAdd', function() {
+    // 추가된 행에 대해서만 계산된 결과를 가져와서 적용
+    var currentIndex = $('.ico_add._rowAdd').index(this);
+        updateSerialNumbers();
+        InputSerialNum(currentIndex);
+        updateLicenseNum(); // SerialNum이 변경될 때마다 LicenseNum 업데이트
+    });
+
+    // "행 삭제" 버튼 클릭 이벤트 설정
+    $(document).on('click', '.ico_del._rowDel', function() {
+    // 삭제된 행에 대해서만 계산된 결과를 가져와서 적용
+        updateSerialNumbers();
+        updateLicenseNum(); // SerialNum이 변경될 때마다 LicenseNum 업데이트
+    });
+
+    // SerialNum_0 변경 시 LicenseNum 업데이트
+    $(document).on('change', '#SerialNum_0', function() {
+        updateLicenseNum();
+    });
+
+    // SequenceNum_ 값들에 변화가 생기면 LicenseNum 값도 변경되도록 이벤트 핸들러 추가
+    $(document).on('change', '[id^="SequenceNum_"]', function() {
+    updateLicenseNum();
+    });
+});
+
+// 발급결과 발급승인을 선택했을 때 승인일자 자동입력 이벤트 설정
+$('#Approval').change(function() {
+    AutoendDe();
+    });
+
+// 제목자동입력함수
+function getInputValue() {
+    
+       $('#smwWorkReg_subject').attr('disabled',true); /*제목입력잠금*/
+
+		var docSubject = $('#smwWorkReg_subject').val();
+		
+        const dateString = $('#AcceptDate').val();/*년도정보가져오기*/
+        const date = new Date(dateString);/*년도정보가져오기*/
+        const year = date.getFullYear();/*년도정보가져오기*/
+        
+		var a = $('#ContNM').val();
+
+        $('#smwWorkReg_subject').val(year + " " + a + " 라이선스 발급 건");
+        $('#smwWorkReg_subject').focus();
+}
+
+// ProductCode 입력 함수
+function InputProductCode() {
+    var productCode = $('#Product').val();
+    $('#ProductCode').val(productCode);
+}
+
+// 제품고유번호 자동입력
+function InputSerialNum(index) {
+    // 접수일자 값을 가져오기
+    const dateString = $('#AcceptDate').val();
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    
+    // 선택된 라디오 버튼의 부모 레이블에서 텍스트 가져오기
+    const selectedClassLabel = $('input[name="colValList.SC3466828143179549120"]:checked').closest('label');
+    const labelText = selectedClassLabel.text();
+
+    // 텍스트에서 첫 글자 가져오기 (공백 제거)
+    const firstLetter = labelText.trim().charAt(0);
+
+    // 발행년도에 출력
+    $('#Year_' + index).val(year);
+
+    var Y = $('#Year_' + index).val();
+    var S = $('#SiteCode').val();
+    var P = $('#ProductCode').val(); // 제품 코드 값 가져오기
+
+    var serialNumValue = "MB-" + firstLetter + Y + "-" + P + "-" + S;
+
+    $('#SerialNum_' + index).val(serialNumValue);
+    $('#SerialNum_' + index).focus();
+
+    // SerialNum 값이 변경될 때마다 LicenseNum 업데이트
+    updateLicenseNum();
+}
+
+// 모든 행의 SerialNum 업데이트
+function updateSerialNumbers() {
+    // 모든 행에 대해서 InputSerialNum 함수 호출
+    $('.ico_add._rowAdd').each(function(index) {
+        InputSerialNum(index);
+    });
+}
+
+// LicenseNum 업데이트 함수
+function updateLicenseNum() {
+    var licenseNumValue = calculateLicenseValue();
+    $('#LicenseNum').val(licenseNumValue);
+}
+
+// 계산된 LicenseNum 값 반환 함수
+function calculateLicenseValue() {
+    // SerialNum_0의 값을 가져오기
+    var serialNumValue = $('#SerialNum_0').val();
+    
+    // SequenceNum 값 가져오기 (어떤 방식으로 가져올지에 따라 코드가 달라질 수 있음)
+    var sequenceNum = getSequenceNum(); // getSequenceNum 함수는 SequenceNum 값을 반환하는 함수로 가정
+
+    // "-"를 추가하여 LicenseNum 생성
+    var calculatedValue = serialNumValue + "-" + sequenceNum;
+
+    // 계산된 값 반환
+    return calculatedValue;
+}
+
+// SequenceNum 값을 가져오는 함수
+function getSequenceNum() {
+    // 마지막으로 추가된 행의 인덱스를 가져오기
+    var lastIndex = $('.ico_add._rowAdd').length - 1;
+
+    // 첫 번째 행의 SequenceNum 값을 가져옴
+    var firstSequenceNum = $('#SequenceNum_0').val();
+
+    // 마지막으로 추가된 행의 SequenceNum 값을 가져옴
+    var lastSequenceNum = $('#SequenceNum_' + lastIndex).val();
+
+    // 'SequenceNum_0'과 'SequenceNum_N'이 동일하면 'SequenceNum_0'만 반환
+    if (firstSequenceNum === lastSequenceNum) {
+        return firstSequenceNum;
+    }
+
+    // 'SequenceNum_0' ~ 'SequenceNum_N' 형태의 문자열을 반환
+    return firstSequenceNum + '/' + lastSequenceNum;
+}
+
+function AutoendDe() {
+    $('#smwWorkReg_endDe').attr('disabled', true); /*완료일입력잠금*/
+
+    // Approval 체크 여부 및 '발급승인' 선택 여부 확인
+    if ($('#Approval:checked').length > 0 && $('input[name="colValList.SC41394527942699534664"]:checked').val() === 'CI41394527942823759490') {
+        // 오늘 날짜를 얻어서 ApprovalDate에 자동 입력
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+        var yyyy = today.getFullYear();
+        today = yyyy + '-' + mm + '-' + dd;
+
+        // jQuery UI Datepicker를 사용하는 경우
+        $('#ApprovalDate').datepicker('setDate', today);
+
+        // ApprovalDate 값을 가져와서 smwWorkReg_endDe에 자동 입력
+        var d = $('#ApprovalDate').val();
+        $('#smwWorkReg_endDe').val(d);
+        $('#smwWorkReg_endDe').focus();
+    }
+}
+
+
