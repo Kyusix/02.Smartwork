@@ -2,7 +2,7 @@
 ### ■ 개요
  - 내부 업무정보시스템의 역할 및 도입 기대효과 (예시 : 유지보수계약관리/기술지원 관리업무)
 
-   ![00  내부 업무정보시스템의 역할](https://github.com/user-attachments/assets/8ecf7ea6-e931-437f-9760-b979afa3cb3b)
+   ![00  내부 업무정보시스템의 역할](https://github.com/user-attachments/assets/593fef80-2234-4e28-801c-6ea9d0ade577)
 
  - UI/UX GUI 툴 이용하여 사용자화면 구성 (예시 : 유지보수계약관리)
 
